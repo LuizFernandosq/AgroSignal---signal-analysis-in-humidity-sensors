@@ -1,7 +1,4 @@
-"""
-AgroSignal — app.py
-Interface Streamlit purificada para leitura exclusiva de CSV e análise focada nos 4 pilares.
-"""
+
 
 import streamlit as st
 import pandas as pd
@@ -14,18 +11,16 @@ import signal_processing as sp
 from report import gerar_relatorio_pdf
 from diagnostics import gerar_diagnostico
 
-# ══════════════════════════════════════════════
-# CONFIGURAÇÃO DA INTERFACE
-# ══════════════════════════════════════════════
+
 st.set_page_config(page_title="AgroSignal", page_icon="🌿", layout="wide")
 
-# Paleta de cores estilo Terminal Dark
+
 V0, V1, V2 = "#4ade80", "#22c55e", "#86efac"
 BG, BG2, BD = "#080f08", "#0d1a0d", "#1e3a1e"
 TX, TX2 = "#a3c9a3", "#4a7a4a"
 C_SINAL, C_FIL, C_ANOM = "#4ade80", "#ffffff", "#ef4444"
 
-# Injeção de CSS para customização visual
+
 st.markdown(f"""
 <style>
     .stApp {{ background-color: {BG}; color: {TX}; }}
@@ -38,16 +33,14 @@ st.markdown(f"""
 st.title("🌿 AgroSignal — Plataforma de Processamento de Sinais Hídricos")
 st.markdown("---")
 
-# ══════════════════════════════════════════════
-# BARRA LATERAL (CONFIGURAÇÕES DO SINAL E CULTURA)
-# ══════════════════════════════════════════════
+
 st.sidebar.header("📁 Entrada do Sinal x[n]")
 arquivo_csv = st.sidebar.file_uploader("Carregar arquivo CSV (Umidade)", type=["csv"])
 
 st.sidebar.markdown("---")
 st.sidebar.header("🌾 Configuração da Cultura Agrícola")
 
-# Dicionário de Culturas com as faixas ideais automáticas consideradas pelo sistema
+
 CULTURAS_PADRAO = {
     "🌽 Milho": {"min": 25, "max": 45},
     "🌱 Soja": {"min": 22, "max": 42},
@@ -57,7 +50,7 @@ CULTURAS_PADRAO = {
     "🛠️ Customizado (Ajuste Manual)": {"min": 25, "max": 45}
 }
 
-# O usuário seleciona a cultura e o sistema já considera a faixa automaticamente
+
 cultura_selecionada = st.sidebar.selectbox(
     "Selecione a Cultura Alvo:",
     options=list(CULTURAS_PADRAO.keys())
@@ -65,7 +58,7 @@ cultura_selecionada = st.sidebar.selectbox(
 
 valores_padrao = CULTURAS_PADRAO[cultura_selecionada]
 
-# Sliders dinâmicos que herdam os valores automáticos da cultura, permitindo ajuste fino
+
 faixa_min = st.sidebar.slider(
     "Limiar Crítico Mínimo (%)", 
     min_value=10, 
@@ -91,9 +84,7 @@ fc = st.sidebar.slider("Frequência de Corte (fc em ciclos/hora)", min_value=0.0
 limiar_z = st.sidebar.slider("Limiar de Anomalia (Z-score)", min_value=1.5, max_value=4.0, value=2.5, step=0.1)
 
 
-# ══════════════════════════════════════════════
-# VERIFICAÇÃO DE ENTRADA DO ARQUIVO CSV
-# ══════════════════════════════════════════════
+═
 if arquivo_csv is None:
     st.info("💡 Por favor, faça o upload de um arquivo CSV na barra lateral para iniciar o processamento de sinais.")
     
@@ -104,7 +95,7 @@ if arquivo_csv is None:
     - **umidade**: Valores contínuos da amplitude medidos em percentagem (0% a 100%).
     """)
     
-    # Criar string de exemplo para visualização imediata ou cópia
+    
     exemplo_df = pd.DataFrame({
         "timestamp": pd.date_range(start="2026-01-01", periods=6, freq="h"),
         "umidade": [35.2, 34.8, 34.1, 55.0, 52.3, 49.8]
@@ -196,7 +187,7 @@ with aba_fazendeiro:
     with col_direita:
         st.markdown("### ⚙️ Instruções e Recomendações Práticas")
         
-        # Tomada de decisão baseada no sinal filtrado e na derivada do pilar 2
+        
         umidade_atual = y_filtrado[-1]
         if umidade_atual < faixa_min:
             st.warning("⚠️ **Ação Urgente: Irrigação Necessária Imediatamente!**")
