@@ -84,7 +84,7 @@ fc = st.sidebar.slider("Frequência de Corte (fc em ciclos/hora)", min_value=0.0
 limiar_z = st.sidebar.slider("Limiar de Anomalia (Z-score)", min_value=1.5, max_value=4.0, value=2.5, step=0.1)
 
 
-═
+
 if arquivo_csv is None:
     st.info("💡 Por favor, faça o upload de um arquivo CSV na barra lateral para iniciar o processamento de sinais.")
     
