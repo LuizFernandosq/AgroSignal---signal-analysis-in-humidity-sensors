@@ -1,4 +1,6 @@
-
+"""
+signal_processing.py — AgroSignal
+Motor purificado de processamento focado estritamente em 4 pilares de Sinais e Sistemas.
 
 Pilares implementados:
   1. Filtro Digital IIR (Butterworth Passa-Baixas com Fase Zero via filtfilt)
@@ -13,7 +15,9 @@ from scipy.signal import butter, filtfilt
 from scipy.fft import fft, fftfreq
 
 
-
+# ─────────────────────────────────────────────
+# 1. TAXA DE AMOSTRAGEM FIXED
+# ─────────────────────────────────────────────
 
 def calcular_fs(df: pd.DataFrame) -> float:
     """
@@ -24,7 +28,9 @@ def calcular_fs(df: pd.DataFrame) -> float:
     return 1.0
 
 
-
+# ─────────────────────────────────────────────
+# PILAR 1: FILTRO DIGITAL IIR (BUTTERWORTH)
+# ─────────────────────────────────────────────
 
 def filtro_butterworth(sinal: np.ndarray, cutoff: float, fs: float, ordem: int = 2) -> np.ndarray:
     """
@@ -154,14 +160,14 @@ def detetar_anomalias_zscore(sinal: np.ndarray, limiar_zscore: float = 2.5) -> t
     media = np.mean(sinal)
     desvio = np.std(sinal)
 
-   
+    # Proteção matemática contra divisão por zero em sinais perfeitamente constantes
     if desvio < 1e-10:
         return np.array([]), np.zeros(len(sinal))
 
     # Equação clássica de normalização linear do sinal
     zscores = (sinal - media) / desvio
     
-  
+    # Filtro de limiar geométrico para mapear os índices das anomalias
     indices_anomalias = np.where(np.abs(zscores) > limiar_zscore)[0]
 
     return indices_anomalias, zscores
